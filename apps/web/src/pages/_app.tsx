@@ -12,6 +12,8 @@ import { SkipToMain } from '@/components/SkipToMain';
 
 import { Inter } from '@next/font/google';
 
+import { ChakraProvider } from '@chakra-ui/react';
+
 // If loading a variable font, you don't need to specify the font weight
 const inter = Inter();
 
@@ -26,9 +28,11 @@ const App = ({ Component, pageProps }: AppProps): JSX.Element => {
 
       <WagmiConfig client={client}>
         <RainbowKitProvider chains={chains}>
-          <div className={inter.className}></div>
-          <SkipToMain />
-          <Component {...pageProps} />
+          <ChakraProvider>
+            <div className={inter.className}></div>
+            <SkipToMain />
+            <Component {...pageProps} />
+          </ChakraProvider>
         </RainbowKitProvider>
       </WagmiConfig>
     </>

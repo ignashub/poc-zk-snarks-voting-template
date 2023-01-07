@@ -10,7 +10,9 @@
       "@/tests": ["tests/index"],
       "@/images/*": ["public/images/*"]
     },
-    "allowJs": true
+    "allowJs": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules"]

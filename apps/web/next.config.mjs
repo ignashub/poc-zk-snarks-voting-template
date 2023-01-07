@@ -10,6 +10,21 @@ const nextConfig = {
     // Removes data-testid for production builds
     reactRemoveProperties: true,
   },
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.resolve.fallback = {
+        fs: false,
+        stream: false,
+        path: false,
+        worker_threads: false,
+        // crypto: require.resolve('crypto-browserify'),
+        os: false,
+        assert: false,
+      };
+    }
+
+    return config;
+  },
 };
 
 const bundleAnalyzerConfig = withBundleAnalyzer({
