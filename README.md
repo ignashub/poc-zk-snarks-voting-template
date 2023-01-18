@@ -19,7 +19,8 @@ You need several dependencies in your system to run [circom](https://github.com/
 
 ### Installing circom
 
-If you want follow official [Circom](https://docs.circom.io/getting-started/installation/#installing-circom) installation, follow [this](https://docs.circom.io/getting-started/installation/#installing-circom)
+If you want follow official [Circom](https://docs.circom.io/getting-started/installation/#installing-circom) installation, follow [this](https://docs.circom.io/getting-started/installation/#installing-circom).
+
 To install from sources, clone the [circom](https://github.com/iden3/circom) repository:
 
 ```
