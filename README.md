@@ -83,3 +83,5 @@ And after that, you can always run this per script:
 
 ./execute_vote_yes_circuit.sh
 ```
+
+![alt text](https://github.com/ignashub/web3-template/blob/main/apps/zkproof/diagrams/diagrams_of_circuits.png?raw=true)
