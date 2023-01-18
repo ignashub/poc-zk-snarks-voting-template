@@ -1,11 +1,9 @@
-# Web3 template
+# Zero-Knowledge Proofs template
 
-[![CI](https://github.com/Byont-Ventures/web3-template/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Byont-Ventures/web3-template/actions/workflows/ci.yml)
+ZK-Proofs template is an extension of [WEB3 Template](https://github.com/Byont-Ventures/web3-template) which is a boilerplate for developing Dapps. This project is using 2 libraries for its ZK-Proofs:
 
-Web3 Template is a boilerplate for developing Ethereum based projects. This repository uses [Turborepo](https://turbo.build/) to manage multiple projects and packages in a single repo, and currently consists of two parts:
-
-- A [Foundry](https://github.com/foundry-rs/foundry) smart contract project
-- A [Next.js](https://nextjs.org/) frontend that lets the user interact with the smart contracts
+- [Circom](https://github.com/iden3/circom) - compiler to write circuits (problem statements)
+- [SnarkJS](https://github.com/iden3/snarkjs) - JavaScript implementation of zkSNARK schemes
 
 ## Getting Started
 
@@ -13,49 +11,73 @@ Before getting started, we suggest reading our [Contributing Guidelines](/CONTRI
 
 ### Prerequisites
 
-You'll need the following tools to run the entire application locally.
+Besides, installing tooling from [WEB3 Template](https://github.com/Byont-Ventures/web3-template). You'll need the following tools to run the entire application locally:
+- [Circom](https://github.com/iden3/circom)
 
-- [Yarn](https://yarnpkg.com/)
-- [Foundry](https://github.com/foundry-rs/foundry#installation)
-- [Node >= 16.x.x](https://nodejs.org/en/download/)
+You need several dependencies in your system to run [circom](https://github.com/iden3/circom) and its associated tools:
+
+### Installing circom
+
+If you want follow official [Circom](https://docs.circom.io/getting-started/installation/#installing-circom) installation, follow [this](https://docs.circom.io/getting-started/installation/#installing-circom)
+To install from sources, clone the [circom](https://github.com/iden3/circom) repository: 
 
 ```
-FONTAWESOME_NPM_AUTH_TOKEN=XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX yarn install
+git clone https://github.com/iden3/circom.git
 ```
 
-### Installation
+Enter the [circom](https://github.com/iden3/circom) directory and use the cargo build to compile:
 
-You can now run the install command to download all dependencies and run the application locally. **Warning:** you might have to change some variables in the env files for the applications to work fully.
-
-```sh
-$ yarn install
-
-# Copy the environment variables
-$ cp ./apps/web/.env.example ./apps/web/.env.local
+```
+cargo build --release
 ```
 
-### Running
+The installation takes around 3 minutes to be completed. When the command successfully finishes, it generates the [circom](https://github.com/iden3/circom) binary in the directory target/release. You can install this binary as follows:
 
-Running the application can be done using the following commands.
-
-```sh
-# Run the entire website locally (requires Docker)
-$ yarn dev
-
-# Run the web and all its dependency jobs
-$ yarn turbo run dev --filter=web...
+```
+cargo install --path circom
 ```
 
-Tests can be executed using the following commands:
+### Installing Snarkjs
 
-```sh
-# Run all tests
-$ yarn test
+[SnarkJS](https://github.com/iden3/snarkjs) is a npm package that contains code to generate and validate ZK proofs from the artifacts produced by circom.
 
-# Only run the tests for contracts project
-$ yarn turbo run test --filter=contracts...
+You can install [snarkJS](https://github.com/iden3/snarkjs) with the following command:
+
+```
+npm install -g snarkjs
 ```
 
-## Contributing
+### Running Scripts
 
-Pull requests are welcome. See the [contribution guidelines](/CONTRIBUTING.md) for more information.
+Before running the application it is needed to run [snarkJS](https://github.com/iden3/snarkjs) scripts. These scripts were made to speed up process of generating [circom](https://github.com/iden3/circom) circuits and doing [Trusted setup](https://blog.hermez.io/hermez-zero-knowledge-proofs/) phase.
+To know how each circuit is generated, you can see the execute files inside the scripts folder.
+
+To run the scripts go inside the scripts folder:
+
+```
+$ cd apps/zkproof/scripts
+```
+
+Run this command per script:
+
+```
+chmod u+x execute_groth16_circuit_example.sh
+
+chmod u+x execute_plonk_circuit_example.sh
+
+chmod u+x execute_vote_no_circuit.sh
+
+chmod u+x execute_vote_yes_circuit.sh
+```
+
+And after that, you can always run this per script:
+
+```
+./execute_groth16_circuit_example.sh
+
+./execute_plonk_circuit_example.sh
+
+./execute_vote_no_circuit.sh
+
+./execute_vote_yes_circuit.sh
+```
