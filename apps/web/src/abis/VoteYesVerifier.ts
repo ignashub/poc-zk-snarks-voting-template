@@ -1,4 +1,4 @@
-export const VoteVerifierAbi = [
+export const VoteYesVerifierAbi = [
   {
     inputs: [
       {
@@ -12,7 +12,7 @@ export const VoteVerifierAbi = [
         type: 'uint256[]',
       },
     ],
-    name: 'verifyProof',
+    name: 'verifyYesProof',
     outputs: [
       {
         internalType: 'bool',

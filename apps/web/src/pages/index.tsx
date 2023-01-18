@@ -13,7 +13,8 @@ import {
 } from '@chakra-ui/react';
 import React, { useState } from 'react';
 import { usePrepareContractWrite, useContractWrite } from 'wagmi';
-import { VoteVerifierAbi } from '../abis/VoteVerifier';
+import { VoteYesVerifierAbi } from '../abis/VoteYesVerifier';
+import { VoteNoVerifierAbi } from '../abis/VoteNoVerifier';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 
 const snarkjs = require('snarkjs');
@@ -58,6 +59,7 @@ const Home: NextPage = () => {
   //Example with groth16
   const [a, setA] = useState('');
   const [b, setB] = useState('');
+  const [c, setC] = useState('');
   const [proof, setProof] = useState('');
   const [signals, setSignals] = useState('');
   const [isValid, setIsValid] = useState(false);
@@ -69,10 +71,7 @@ const Home: NextPage = () => {
     'http://localhost:8000/groth16/example/verification_key.json';
 
   const runProofs = () => {
-    if (a.length == 0 || a.length == 0) {
-      return;
-    }
-    let proofInput = { a, b };
+    let proofInput = { a, b, c };
     console.log(proofInput);
 
     makeProof(proofInput, wasmFile, zkeyFile).then(
@@ -87,12 +86,6 @@ const Home: NextPage = () => {
   };
 
   //Example with plonk
-  const [d, setD] = useState('');
-  const [e, setE] = useState('');
-  const [plonkProof, setPlonkProof] = useState('');
-  const [plonkSignals, setPlonkSignals] = useState('');
-  const [isPlonkValid, setIsPlonkValid] = useState(false);
-
   let wasmFilePlonk =
     'http://localhost:8000/plonk/example/example_js/example.wasm';
   let zkeyFilePlonk = 'http://localhost:8000/plonk/example/example_final.zkey';
@@ -100,26 +93,23 @@ const Home: NextPage = () => {
     'http://localhost:8000/plonk/example/verification_key.json';
 
   const runPlonkProofs = () => {
-    if (d.length == 0 || e.length == 0) {
-      return;
-    }
-    let proofInput = { d, e };
+    let proofInput = { a, b, c };
     console.log(proofInput);
 
     makePlonkProof(proofInput, wasmFilePlonk, zkeyFilePlonk).then(
       ({ proof: _proof, publicSignals: _signals }) => {
-        setPlonkProof(JSON.stringify(_proof, null, 2));
-        setPlonkSignals(JSON.stringify(_signals, null, 2));
+        setProof(JSON.stringify(_proof, null, 2));
+        setSignals(JSON.stringify(_signals, null, 2));
         verifyPlonkProof(verificationKeyPlonk, _signals, _proof).then(
           (_isValid) => {
-            setIsPlonkValid(_isValid);
+            setIsValid(_isValid);
           }
         );
       }
     );
   };
 
-  //Age verification via PLONK
+  //Vote verification via PLONK
   const [voteString, setVoteString] = useState('');
   const [voteProof, setVoteProof] = useState('');
   const [voteSignals, setVoteSignals] = useState('');
@@ -143,18 +133,18 @@ const Home: NextPage = () => {
     'http://localhost:8000/plonk/votecheck/no_vote_check/verification_key.json';
 
   const { config: yesVoteConfig } = usePrepareContractWrite({
-    address: '0x3F97ff7225484a7e34465D3f5770996465EE93C2',
-    abi: VoteVerifierAbi,
-    functionName: 'verifyProof',
+    address: '0xf88081640879E12586fA484791203a64e22Aea06',
+    abi: VoteYesVerifierAbi,
+    functionName: 'verifyYesProof',
     args: [voteProofSC1, voteProofSC2],
   });
 
   const { write: voteYesWrite } = useContractWrite(yesVoteConfig);
 
   const { config: noVoteConfig } = usePrepareContractWrite({
-    address: '0xE4D6d41f890E49d58a586938fDf4B166690b493f',
-    abi: VoteVerifierAbi,
-    functionName: 'verifyProof',
+    address: '0x197FF0b2aaa050E20Bfc148b6DF97f726DfcEF2c',
+    abi: VoteNoVerifierAbi,
+    functionName: 'verifyNoProof',
     args: [voteProofSC1, voteProofSC2],
   });
 
@@ -189,6 +179,7 @@ const Home: NextPage = () => {
 
   const runVoteYesProofs = () => {
     let vote = voteToBinary(voteString).length;
+    console.log(voteToBinary(voteString));
     let proofInput = { vote };
     console.log(proofInput);
 
@@ -196,11 +187,6 @@ const Home: NextPage = () => {
       ({ proof: _proof, publicSignals: _signals }) => {
         setVoteProof(JSON.stringify(_proof, null, 2));
         setVoteSignals(JSON.stringify(_signals, null, 2));
-        verifyPlonkProof(verificationKeyVoteYes, _signals, _proof).then(
-          (_isValid) => {
-            setIsVoteValid(_isValid);
-          }
-        );
         makeVoteCallData(proofInput, wasmFileVoteYes, zkeyFileVoteYes);
       }
     );
@@ -208,6 +194,7 @@ const Home: NextPage = () => {
 
   const runVoteNoProofs = () => {
     let vote = voteToBinary(voteString).length;
+    console.log(voteToBinary(voteString));
     let proofInput = { vote };
     console.log(proofInput);
 
@@ -249,7 +236,7 @@ const Home: NextPage = () => {
               </Heading>
               <Input
                 id="outlined-basic"
-                placeholder="a"
+                placeholder="A = 4"
                 type="number"
                 label="a"
                 onChange={(e) => setA(e.target.value)}
@@ -259,10 +246,20 @@ const Home: NextPage = () => {
               />
               <Input
                 id="outlined-basic"
-                placeholder="b"
+                placeholder="B = 3"
                 type="number"
                 label="b"
                 onChange={(e) => setB(e.target.value)}
+                errorBorderColor="red.300"
+                w="140px"
+                style={{ marginBottom: '8px' }}
+              />
+              <Input
+                id="outlined-basic"
+                placeholder="C = 6"
+                type="number"
+                label="c"
+                onChange={(e) => setC(e.target.value)}
                 errorBorderColor="red.300"
                 w="140px"
                 style={{ marginBottom: '8px' }}
@@ -276,7 +273,17 @@ const Home: NextPage = () => {
                 onClick={runProofs}
                 marginBottom="16px"
               >
-                Verify Proof
+                Verify Proof With Groth16
+              </Button>
+              <Button
+                variant="solid"
+                bg="black"
+                _hover={{ bg: 'gray.600' }}
+                color="white"
+                onClick={runPlonkProofs}
+                marginBottom="16px"
+              >
+                Verify Proof With Plonk
               </Button>
               <Heading size={'xl'} marginBottom="20px">
                 Proof:
@@ -286,51 +293,14 @@ const Home: NextPage = () => {
                 Signals:
               </Heading>
               <Text marginBottom="40px">{signals}</Text>
-              <Heading size={'md'} marginBottom="30px">
+              <Heading size={'md'} marginBottom="16px">
                 Valid:
               </Heading>
               {proof.length > 0 && (
                 <Text>{isValid ? 'Valid proof' : 'Invalid proof'}</Text>
               )}
-              <Heading size={'xl'} marginBottom="16px">
-                Verify with Plonk
-              </Heading>
-              <Input
-                id="outlined-basic"
-                placeholder="d"
-                type="number"
-                label="d"
-                onChange={(e) => setD(e.target.value)}
-                errorBorderColor="red.300"
-                w="140px"
-                style={{ marginBottom: '8px' }}
-              />
 
-              <Button
-                variant="solid"
-                bg="black"
-                _hover={{ bg: 'gray.600' }}
-                color="white"
-                onClick={runPlonkProofs}
-                marginBottom="16px"
-              >
-                Verify Proof
-              </Button>
-              <Heading size={'md'} marginBottom="16px">
-                Proof:
-              </Heading>
-              <Text marginBottom="16px">{plonkProof}</Text>
-              <Heading size={'md'} marginBottom="16px">
-                Signals:
-              </Heading>
-              <Text marginBottom="40px">{plonkSignals}</Text>
-              <Heading size={'md'} marginBottom="30px">
-                Valid:
-              </Heading>
-              {plonkProof.length > 0 && (
-                <Text>{isPlonkValid ? 'Valid proof' : 'Invalid proof'}</Text>
-              )}
-              <Heading size={'xl'} marginBottom="20px">
+              <Heading size={'xl'} marginTop="50px" marginBottom="20px">
                 Verify Vote via Smart Contract
               </Heading>
               <RadioGroup
