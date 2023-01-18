@@ -12,6 +12,7 @@ Before getting started, we suggest reading our [Contributing Guidelines](/CONTRI
 ### Prerequisites
 
 Besides, installing tooling from [WEB3 Template](https://github.com/Byont-Ventures/web3-template). You'll need the following tools to run the entire application locally:
+
 - [Circom](https://github.com/iden3/circom)
 
 You need several dependencies in your system to run [circom](https://github.com/iden3/circom) and its associated tools:
@@ -19,7 +20,7 @@ You need several dependencies in your system to run [circom](https://github.com/
 ### Installing circom
 
 If you want follow official [Circom](https://docs.circom.io/getting-started/installation/#installing-circom) installation, follow [this](https://docs.circom.io/getting-started/installation/#installing-circom)
-To install from sources, clone the [circom](https://github.com/iden3/circom) repository: 
+To install from sources, clone the [circom](https://github.com/iden3/circom) repository:
 
 ```
 git clone https://github.com/iden3/circom.git

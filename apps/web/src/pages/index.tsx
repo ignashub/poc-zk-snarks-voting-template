@@ -17,7 +17,7 @@ import { VoteYesVerifierAbi } from '../abis/VoteYesVerifier';
 import { VoteNoVerifierAbi } from '../abis/VoteNoVerifier';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 
-const snarkjs = require('snarkjs');
+import snarkjs = require('snarkjs');
 
 const makeProof = async (_proofInput, _wasm, _zkey) => {
   const { proof, publicSignals } = await snarkjs.groth16.fullProve(
@@ -64,14 +64,14 @@ const Home: NextPage = () => {
   const [signals, setSignals] = useState('');
   const [isValid, setIsValid] = useState(false);
 
-  let wasmFile =
+  const wasmFile =
     'http://localhost:8000/groth16/example/example_js/example.wasm';
-  let zkeyFile = 'http://localhost:8000/groth16/example/example_final.zkey';
-  let verificationKey =
+  const zkeyFile = 'http://localhost:8000/groth16/example/example_final.zkey';
+  const verificationKey =
     'http://localhost:8000/groth16/example/verification_key.json';
 
   const runProofs = () => {
-    let proofInput = { a, b, c };
+    const proofInput = { a, b, c };
     console.log(proofInput);
 
     makeProof(proofInput, wasmFile, zkeyFile).then(
@@ -86,14 +86,15 @@ const Home: NextPage = () => {
   };
 
   //Example with plonk
-  let wasmFilePlonk =
+  const wasmFilePlonk =
     'http://localhost:8000/plonk/example/example_js/example.wasm';
-  let zkeyFilePlonk = 'http://localhost:8000/plonk/example/example_final.zkey';
-  let verificationKeyPlonk =
+  const zkeyFilePlonk =
+    'http://localhost:8000/plonk/example/example_final.zkey';
+  const verificationKeyPlonk =
     'http://localhost:8000/plonk/example/verification_key.json';
 
   const runPlonkProofs = () => {
-    let proofInput = { a, b, c };
+    const proofInput = { a, b, c };
     console.log(proofInput);
 
     makePlonkProof(proofInput, wasmFilePlonk, zkeyFilePlonk).then(
@@ -114,22 +115,21 @@ const Home: NextPage = () => {
   const [voteProof, setVoteProof] = useState('');
   const [voteSignals, setVoteSignals] = useState('');
   const [isVoteValid, setIsVoteValid] = useState(false);
-  const [voteCallData, setVoteCalldata] = useState('');
   const [voteProofSC1, setVoteProofSC1] = useState<`0x${string}` | undefined>();
   const [voteProofSC2, setVoteProofSC2] = useState<BigNumber | undefined>('');
 
-  let wasmFileVoteYes =
+  const wasmFileVoteYes =
     'http://localhost:8000/plonk/votecheck/yes_vote_check/yes_vote_check_js/yes_vote_check.wasm';
-  let zkeyFileVoteYes =
+  const zkeyFileVoteYes =
     'http://localhost:8000/plonk/votecheck/yes_vote_check/yes_vote_check_final.zkey';
-  let verificationKeyVoteYes =
+  const verificationKeyVoteYes =
     'http://localhost:8000/plonk/votecheck/yes_vote_check/verification_key.json';
 
-  let wasmFileVoteNo =
+  const wasmFileVoteNo =
     'http://localhost:8000/plonk/votecheck/no_vote_check/no_vote_check_js/no_vote_check.wasm';
-  let zkeyFileVoteNo =
+  const zkeyFileVoteNo =
     'http://localhost:8000/plonk/votecheck/no_vote_check/no_vote_check_final.zkey';
-  let verificationKeyVoteNo =
+  const verificationKeyVoteNo =
     'http://localhost:8000/plonk/votecheck/no_vote_check/verification_key.json';
 
   const { config: yesVoteConfig } = usePrepareContractWrite({
@@ -178,24 +178,29 @@ const Home: NextPage = () => {
   };
 
   const runVoteYesProofs = () => {
-    let vote = voteToBinary(voteString).length;
+    const vote = voteToBinary(voteString).length;
     console.log(voteToBinary(voteString));
-    let proofInput = { vote };
+    const proofInput = { vote };
     console.log(proofInput);
 
     makePlonkProof(proofInput, wasmFileVoteYes, zkeyFileVoteYes).then(
       ({ proof: _proof, publicSignals: _signals }) => {
         setVoteProof(JSON.stringify(_proof, null, 2));
         setVoteSignals(JSON.stringify(_signals, null, 2));
+        verifyPlonkProof(verificationKeyVoteYes, _signals, _proof).then(
+          (_isValid) => {
+            setIsVoteValid(_isValid);
+          }
+        );
         makeVoteCallData(proofInput, wasmFileVoteYes, zkeyFileVoteYes);
       }
     );
   };
 
   const runVoteNoProofs = () => {
-    let vote = voteToBinary(voteString).length;
+    const vote = voteToBinary(voteString).length;
     console.log(voteToBinary(voteString));
-    let proofInput = { vote };
+    const proofInput = { vote };
     console.log(proofInput);
 
     makePlonkProof(proofInput, wasmFileVoteNo, zkeyFileVoteNo).then(
