@@ -2,8 +2,8 @@
 
 ZK-Proofs template is an extension of [WEB3 Template](https://github.com/Byont-Ventures/web3-template) which is a boilerplate for developing Dapps. This project is using 2 libraries for its ZK-Proofs:
 
-- [Circom](https://github.com/iden3/circom) - compiler to write circuits (problem statements)
-- [SnarkJS](https://github.com/iden3/snarkjs) - JavaScript implementation of zkSNARK schemes
+- [Circom](https://github.com/iden3/circom) - compiler to write circuits (problem statements).
+- [SnarkJS](https://github.com/iden3/snarkjs) - JavaScript implementation of zkSNARK schemes.
 
 ## Getting Started
 
@@ -129,8 +129,9 @@ template Example () {
 component main { public [ a, c ] } = Example();
 ```
 
-So, in short what this circuit does it takes 2 public and 1 private signal. Then it does the constraints and sees
+So, in short what this circuit does - it takes 2 public and 1 private signal. Then it does the constraints and sees
 if it is equal to 18.
+
 What Prover and Verifier sees can be visualized through these diagrams:
 
 ![alt text](https://github.com/ignashub/web3-template/blob/main/apps/zkproof/diagrams/prover_verifier_views.png?raw=true)
@@ -184,6 +185,7 @@ component main = NoBinaryCount();
 ```
 
 These circuits work very simple. They just take the binary length of Yes (101100111001011110011) or No (10011101101111) string and calculate whenever the length is correct to the circuits output 21 or 14.
+
 To carry on, here is the representation of circuits in diagrams:
 
 ![alt text](https://github.com/ignashub/web3-template/blob/main/apps/zkproof/diagrams/yes_no_circuit_diagrams.png?raw=true)
@@ -192,3 +194,30 @@ And the Prover/Verifier views:
 
 ![alt text](https://github.com/ignashub/web3-template/blob/main/apps/zkproof/diagrams/prover_verifier_yes_vote_views.png?raw=true)
 ![alt text](https://github.com/ignashub/web3-template/blob/main/apps/zkproof/diagrams/prover_verifier_no_vote_views.png?raw=true)
+
+## Circom and Snarkjs workflow
+
+Finally, we should look into how Circom and SnarkJS work together.
+
+To do so, a diagram was drawn:
+
+![alt text](https://github.com/ignashub/web3-template/blob/main/apps/zkproof/diagrams/circom_snarkjs_flow.png?raw=true)
+
+This particular example uses yes_vote_check circuit. But for explanation reasons we will just call it circuit because this logic is applicable for any circuit.
+
+Starting from the top, Circom circuit is compiled into 2 files:
+
+This process is done through the scripts.
+
+- circuit.wasm/circuit.cpp - it is a program representation of your circuit. It takes the inputs(public and private signals) and then generates - witness which is a whole computational trace of your arithmetic circuit (all correct signals to satisfy your circuit).
+- circuit.r1cs - more mathematical representation of a circuit. To read more about R1CS [start](https://medium.com/@VitalikButerin/quadratic-arithmetic-programs-from-zero-to-hero-f6d558cea649) here.
+
+Starting from the left, witness is generated when the inputs (public and private signals) are supplied (e.g through the front-end) to circuit.wasm/cpp program.
+
+On the right side, circuit.final.zkey is generated from the circuit. This file is a public parameters of the zk-SNARK protocol for our application.
+
+- Then a verification key is generated from circuit.final.zkey. Verification key helps to identify our zk-SNARK protocol.
+- Prover uses circuit.final.zkey as his proving key.
+- Prover combines circuit.final.zkey with the witness file mentioned before. It generates the proof.json (actual proof).
+- Prover sends the proof and public signals(inputs) to Verifier.
+- Verifier uses either the verification key or Verifier smart contract (in our case) to verify the proof and public signals(inputs).
