@@ -17,7 +17,7 @@ Besides, installing tooling from [WEB3 Template](https://github.com/Byont-Ventur
 
 You need several dependencies in your system to run [circom](https://github.com/iden3/circom) and its associated tools:
 
-### Installing circom
+### Installing Circom
 
 If you want follow official [Circom](https://docs.circom.io/getting-started/installation/#installing-circom) installation, follow [this](https://docs.circom.io/getting-started/installation/#installing-circom).
 
@@ -84,4 +84,28 @@ And after that, you can always run this per script:
 ./execute_vote_yes_circuit.sh
 ```
 
-![alt text](https://github.com/ignashub/web3-template/blob/main/apps/zkproof/diagrams/diagrams_of_circuits.png?raw=true)
+## Circuit Explanation
+
+Several diagrams were drawn to understand and have a better view of how the implemented circuits work.
+To get more information on how to write Circom circuits check [this](https://docs.circom.io/)
+Let's start with a simple prover and verifier workflow:
+
+![alt text](https://github.com/ignashub/web3-template/blob/main/apps/zkproof/diagrams/prover_verifier_workflow.png?raw=true)
+
+After that, let's look into our simple example circuit:
+
+![alt text](https://github.com/ignashub/web3-template/blob/main/apps/zkproof/diagrams/arithmetic_circuit_example.png?raw=true)
+
+This circuit is very simple and it is easy to reverse engineer the private signal. Nonetheless, it was made for
+learning cases:
+
+- Prover enters private signal B.
+- Public signals are already given. (In this case you enter them through front-end, but it could be hard-coded).
+- Intermediary signal D is calculated.
+- signal D is summed up with signal C to get OUT signal which is always 18.
+
+So, in short what this circuit does it takes 2 public and 1 private signal. Then it does the constraints and sees
+if it is equal to 18.
+What Prover and Verifier sees can be visualized through these diagrams:
+
+![alt text](https://github.com/ignashub/web3-template/blob/main/apps/zkproof/diagrams/prover_verifier_views.png?raw=true)
