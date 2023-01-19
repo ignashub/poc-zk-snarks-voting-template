@@ -39,6 +39,14 @@ The installation takes around 3 minutes to be completed. When the command succes
 cargo install --path circom
 ```
 
+## Installing Application
+
+```
+$ yarn install
+```
+
+After this, all dependencies should be installed but just incase you can also install [snarkJS](https://github.com/iden3/snarkjs) library:
+
 ### Installing Snarkjs
 
 [SnarkJS](https://github.com/iden3/snarkjs) is a npm package that contains code to generate and validate ZK proofs from the artifacts produced by circom.
@@ -82,6 +90,22 @@ And after that, you can always run this per script:
 ./execute_vote_no_circuit.sh
 
 ./execute_vote_yes_circuit.sh
+```
+
+## Starting the project
+
+To start the project you need to start back-end which serves files needed for generating proofs:
+
+```
+$ cd apps/zkproof/file-server
+
+$ node index.js
+```
+
+Then you can start the front-end:
+
+```
+$ yarn dev
 ```
 
 ## Circuit Explanation
