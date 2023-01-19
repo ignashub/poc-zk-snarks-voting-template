@@ -87,7 +87,8 @@ And after that, you can always run this per script:
 ## Circuit Explanation
 
 Several diagrams were drawn to understand and have a better view of how the implemented circuits work.
-To get more information on how to write Circom circuits check [this](https://docs.circom.io/)
+To get more information on how to write Circom circuits check [this](https://docs.circom.io/).
+
 Let's start with a simple prover and verifier workflow:
 
 ![alt text](https://github.com/ignashub/web3-template/blob/main/apps/zkproof/diagrams/prover_verifier_workflow.png?raw=true)
@@ -102,7 +103,31 @@ learning cases:
 - Prover enters private signal B.
 - Public signals are already given. (In this case you enter them through front-end, but it could be hard-coded).
 - Intermediary signal D is calculated.
-- signal D is summed up with signal C to get OUT signal which is always 18.
+- Signal D is summed up with signal C to get OUT signal which has to be 18.
+
+And here is the representation of it in Circom language:
+
+```
+pragma circom 2.0.0;
+
+/*This circuit template checks that c is the multiplication of a and b.*/
+
+template Example () {
+   // Declaration of signals.
+   signal input a; //Public value.
+   signal input b; //Private value.
+   signal input c; //Public value.
+   signal d; //Intermediate signal.
+   signal output out; //Output of the signal.
+
+   // The logic or a ‘constraint’ which a private signal has to satisfy.
+   d <== a * b;
+   out <== c + d;
+   out === 18;
+}
+
+component main { public [ a, c ] } = Example();
+```
 
 So, in short what this circuit does it takes 2 public and 1 private signal. Then it does the constraints and sees
 if it is equal to 18.
