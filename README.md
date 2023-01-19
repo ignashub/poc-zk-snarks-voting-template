@@ -107,7 +107,7 @@ learning cases:
 
 And here is the representation of it in Circom language:
 
-```
+```javascript
 pragma circom 2.0.0;
 
 /*This circuit template checks that c is the multiplication of a and b.*/
@@ -137,3 +137,58 @@ What Prover and Verifier sees can be visualized through these diagrams:
 
 - Prover knows everything about the circuit. All public, private signals, constraints, output.
 - Verifier knows all the public signals, constraints, and the output value.
+
+To continue, let's look into our Yes and No vote circuits. The idea behind these circuits is to identify whenever a
+user voted Yes or No.
+
+Yes vote circuit:
+
+```javascript
+pragma circom 2.0.0;
+
+template YesBinaryCount () {
+    signal input vote; // Users vote in binary
+    signal output out; // Output of the circuit
+    var number=0; // Counter
+
+    // Counting how many bits does a String has
+    for (var i = 0; i < vote; i++) {
+        number+=1;
+    }
+    out <-- number; // Assigning counter to output
+    out === 21; // Constraint: Yes string should have length of 21 bits
+}
+
+component main = YesBinaryCount();
+```
+
+No vote circuit:
+
+```javascript
+pragma circom 2.0.0;
+
+template NoBinaryCount () {
+    signal input vote; // Users vote in binary
+    signal output out; // Output of the circuit
+    var number=0; // Counter
+
+    // Counting how many bits does a String has
+    for (var i = 0; i < vote; i++) {
+        number+=1;
+    }
+    out <-- number; // Assigning counter to output
+    out === 14; // Constraint: No string should have length of 14 bits
+}
+
+component main = NoBinaryCount();
+```
+
+These circuits work very simple. They just take the binary length of Yes (101100111001011110011) or No (10011101101111) string and calculate whenever the length is correct to the circuits output 21 or 14.
+To carry on, here is the representation of circuits in diagrams:
+
+![alt text](https://github.com/ignashub/web3-template/blob/main/apps/zkproof/diagrams/yes_no_circuit_diagrams.png?raw=true)
+
+And the Prover/Verifier views:
+
+![alt text](https://github.com/ignashub/web3-template/blob/main/apps/zkproof/diagrams/prover_verifier_yes_vote_views.png?raw=true)
+![alt text](https://github.com/ignashub/web3-template/blob/main/apps/zkproof/diagrams/prover_verifier_no_vote_views.png?raw=true)
