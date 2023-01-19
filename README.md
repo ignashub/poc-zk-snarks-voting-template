@@ -109,3 +109,6 @@ if it is equal to 18.
 What Prover and Verifier sees can be visualized through these diagrams:
 
 ![alt text](https://github.com/ignashub/web3-template/blob/main/apps/zkproof/diagrams/prover_verifier_views.png?raw=true)
+
+- Prover knows everything about the circuit. All public, private signals, constraints, output.
+- Verifier knows all the public signals, constraints, and the output value.
