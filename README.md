@@ -1,3 +1,7 @@
+# About
+
+This is a Proof of Concept project which uses Zero-Knowledge Proofs to verify whenever a person voted yes or no without revealing it. The project also consists of simple arithmetic [circuit](https://docs.circom.io/getting-started/writing-circuits/) example. It also involves scripts for managing [Trusted setup](https://blog.pantherprotocol.io/a-guide-to-understanding-trusted-setups/) phase faster.
+
 # Zero-Knowledge Proofs template
 
 ZK-Proofs template is an extension of [WEB3 Template](https://github.com/Byont-Ventures/web3-template) which is a boilerplate for developing Dapps. This project is using 2 libraries for its ZK-Proofs:
